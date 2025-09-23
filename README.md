@@ -1,257 +1,88 @@
-# 🦁 Zoológico API REST
+# API Zoológico
 
-## 📌 Descrição
-API REST para gerenciar um zoológico, permitindo CRUD completo em **Animais, Habitats, Cuidadores, Veterinários e Alimentações**. Possui endpoints de filtragem para consultas específicas e respeita regras de negócio como capacidade de habitats e associação de cuidadores aos animais.
-
----
-
-## 👥 Participantes
-- Kauã Reis Rodrigues  
-- Luis  
-- Pedro  
-- Brena  
+API REST desenvolvida em **Spring Boot** para gerenciar informações de um zoológico, permitindo CRUD de animais, cuidadores, habitats e envio de e-mails.
 
 ---
 
-## ⚙️ Tecnologias Utilizadas
-- Java 21  
-- Spring Boot 3  
-- Spring Data JPA  
-- Hibernate  
-- MySQL  
-- Postman (para testes)  
-- Maven  
+## Tecnologias utilizadas
 
----
+- Java 21
+- Spring Boot 3.5.5
+- Spring Data JPA
+- MySQL
+- Spring Mail (SMTP)
+- JUnit 5
+- Maven
 
-## 🏛️ Entidades
-
-### Animal
-- **id**: Long  
-- **nome**: String  
-- **espécie**: String  
-- **idade**: Integer  
-- **habitat**: Habitat  
-- **cuidador**: Cuidador  
-
-### Habitat
-- **id**: Long  
-- **nome**: String  
-- **tipo**: String (terrestre, aquático, aéreo)  
-- **capacidadeMaxima**: Integer  
-
-### Cuidador
-- **id**: Long  
-- **nome**: String  
-- **especialidade**: String  
-- **turno**: Enum (MANHA, TARDE, NOITE)  
-
-### Veterinário
-- **id**: Long  
-- **nome**: String  
-- **CRMV**: String  
-- **especialidade**: String  
-
-### Alimentação
-- **id**: Long  
-- **tipoComida**: String  
-- **quantidadeDiaria**: Double  
-- **animal**: Animal  
-
----
-
-## 🔍 Funcionalidades
-
-### CRUD
-- **Criar**: `POST /entidade`  
-- **Listar todos**: `GET /entidade`  
-- **Atualizar**: `PUT /entidade/{id}`  
-- **Deletar**: `DELETE /entidade/{id}`  
-
-### Filtros
-- **Animal**
-  - `GET /animais?especie=Leão`  
-  - `GET /animais?idadeMin=5&idadeMax=10`  
-  - `GET /animais?nomeParcial=Leo`  
-- **Habitat**
-  - `GET /habitats?tipo=terrestre`  
-- **Cuidador**
-  - `GET /cuidadores?especialidade=Répteis`  
-  - `GET /cuidadores?turno=MANHA`  
-- **Veterinário**
-  - `GET /veterinarios?especialidade=Felinos`  
-- **Alimentação**
-  - `GET /alimentacoes?tipoComida=Frutas`  
-  - `GET /alimentacoes?animalId=3`  
-
----
-
-## 📊 Regras de Negócio
-1. Um habitat não pode ultrapassar sua capacidade máxima de animais.  
-2. Cada animal deve ter pelo menos um cuidador associado.  
-
----
-
-## 🚀 Documentação da API REST – Zoológico
-
-*Base URL:* http://localhost:8080 (ajuste conforme a porta da sua aplicação)
-
-A API permite gerenciar as seguintes entidades: *Cuidador, Habitat, Veterinário e Alimentação*.  
-Cada entidade possui endpoints de *CRUD (Create, Read, Update, Delete)*. Alguns endpoints possuem filtros.
-
----
-
-## 🧑‍💼 Cuidador
-
-*Base URL:* /cuidadores
-
-### Endpoints:
-
-*GET /cuidadores*  
-Lista todos os cuidadores. Permite filtros opcionais via query params:  
-- especialidade → filtra pelo tipo de especialidade.  
-- turno → filtra pelo turno (MANHA, TARDE, NOITE).  
-
-*Exemplos:*
-```http
-GET /cuidadores
-GET /cuidadores?especialidade=Mamíferos
-GET /cuidadores?turno=MANHA
-GET /cuidadores?especialidade=Mamíferos&turno=MANHA
-
-GET /cuidadores/{id}
-Retorna um cuidador pelo ID.
-
-POST /cuidadores
-Cria um novo cuidador. JSON de exemplo:
-
-{
-  "nome": "Carlos Silva",
-  "especialidade": "Mamíferos",
-  "turno": "MANHA"
-}
-
-PUT /cuidadores/{id}
-Atualiza um cuidador existente. Mesma estrutura do POST.
-
-DELETE /cuidadores/{id}
-Remove um cuidador pelo ID.
+## Estrutura do projeto
+```
+src
+├── main
+│   ├── java
+│   │   └── com.Aula5.ProjetoZoo.ApiZoologico
+│   │       ├── controllers
+│   │       ├── models
+│   │       ├── repositories
+│   │       └── services
+│   └── resources
+│       └── application.properties
+└── test
+    └── java
+        └── com.Aula5.ProjetoZoo.ApiZoologico
 ```
 
----
+## Funcionalidades
 
-🌿 Habitat
-
-Base URL: /habitats
-
-Endpoints:
-```http
-GET /habitats
-```
-Lista todos os habitats. Filtros opcionais:
-
-tipo → filtra habitats pelo tipo (terrestre, aquático, aéreo).
-
-nome → busca habitats pelo nome (contendo a string).
-
-
-Exemplos:
-```http
-GET /habitats
-GET /habitats?tipo=terrestre
-GET /habitats?nome=Savana
-
-GET /habitats/{id}
-Busca um habitat pelo ID.
-
-POST /habitats
-Cria um habitat. JSON de exemplo:
-
-{
-  "nome": "Savana",
-  "tipo": "terrestre",
-  "capacidadeMaxima": 15
-}
-
-PUT /habitats/{id}
-Atualiza um habitat existente.
-
-DELETE /habitats/{id}
-Remove um habitat pelo ID.
-```
+- CRUD de **Animais**, **Cuidadores**, **Habitat**, etc.
+- Envio de e-mail de atualização de cadastro de animais para cuidadores.
+- Consultas com filtros (ex.: buscar animais por espécie ou habitat).
+- Integração com banco **MySQL**.
 
 ---
 
-🩺 Veterinário
+## Configuração do projeto
 
-Base URL: /veterinario
-
-Endpoints:
-```http
-GET /veterinario
-Lista todos os veterinários.
-
-GET /veterinario/{id}
-Busca um veterinário pelo ID.
-
-GET /veterinario/especialidade/{especialidade}
-Busca todos os veterinários que possuem a especialidade informada.
+### 1. Clone o repositório: 
+```bash
+git clone https://github.com/seu-usuario/ApiZoologico.git
 ```
-Exemplo:
-```http
-GET /veterinario/especialidade/Felinos
 
-POST /veterinario
-Cria um veterinário. JSON de exemplo:
-
-{
-  "nome": "Ana Souza",
-  "idade": 35,
-  "CRMV": 12345,
-  "especialidade": "Felinos"
-}
-
-PUT /veterinario/{id}
-Atualiza um veterinário existente. Exemplo de JSON:
-
-{
-  "nome": "Ana Souza",
-  "idade": 36,
-  "CRMV": 12345,
-  "especialidade": "Felinos"
-}
-
-DELETE /veterinario/{id}
-Remove um veterinário pelo ID.
+### 2. Configure o banco de dados MySQL em `application.properties`:
+```properties
+spring.datasource.url=jdbc:mysql://localhost:3306/ApiZoologico?useSSL=false&serverTimezone=UTC
+spring.datasource.username=root
+spring.datasource.password=admin
+spring.jpa.hibernate.ddl-auto=update
 ```
+
+### 3. Rode o projeto:
+```bash
+mvn spring-boot:run
+```
+
+### 4. Endpoints principais
+```
+| Método | Endpoint                 | Descrição                   |
+| ------ | -------------------------| ----------------------------|
+| GET    | /animais                 | Listar todos os animais     |
+| GET    | /animais/{id}            | Buscar animal por ID        |
+| POST   | /animais                 | Criar um novo animal        |
+| PUT    | /animais/{id}            | Atualizar animal existente  |
+| DELETE | /animais/{id}            | Excluir animal              |
+| GET    | /animais/filtro?especie= | Filtrar animais por espécie |
+```
+
+### 4.1. Documentação Swagger
+
+Após rodar o projeto (`mvn spring-boot:run`), você pode acessar a documentação interativa da API via navegador no link:
+
+👉 [Swagger UI](http://localhost:8080/swagger-ui/index.html)
+
+Nela, é possível:
+- Visualizar todos os endpoints da API.
+- Consultar parâmetros e respostas esperadas.
 
 ---
 
-🍽 Alimentação
-
-Base URL: /alimentacao
-
-Endpoints:
-```http
-GET /alimentacao
-Lista todas as alimentações.
-(Filtros comentados no código: tipoComida e animalId)
-
-GET /alimentacao/{id}
-Busca uma alimentação pelo ID. (comentado no controller)
-
-POST /alimentacao
-Cria uma alimentação. JSON de exemplo:
-
-{
-  "tipoComida": "CARNE",
-  "quantidadeDiaria": 5.0
-}
-
-PUT /alimentacao/{id}
-Atualiza uma alimentação existente. Mesma estrutura do POST.
-
-DELETE /alimentacao/{id}
-Remove uma alimentação pelo ID.
-```
----
+## Licença
+- Projeto open source. Sinta-se à vontade para contribuir. 💛

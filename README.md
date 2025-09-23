@@ -6,10 +6,10 @@ API REST desenvolvida em **Spring Boot** para gerenciar informações de um zool
 
 ## Autores
 
--Luiz Vinícius Marcelo Mariath
--Pedro Henrique Comandolli
--Brena Barradas
--Kaua Reis Rodrigues
+- Luiz Vinícius Marcelo Mariath
+- Pedro Henrique Comandolli
+- Brena Barradas
+- Kaua Reis Rodrigues
 
 ## Tecnologias utilizadas
 

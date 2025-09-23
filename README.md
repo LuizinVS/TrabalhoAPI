@@ -68,16 +68,14 @@ mvn spring-boot:run
 ```
 
 ### 4. Endpoints principais
-```
-| Método | Endpoint                 | Descrição                   |
-| ------ | -------------------------| ----------------------------|
-| GET    | /animais                 | Listar todos os animais     |
-| GET    | /animais/{id}            | Buscar animal por ID        |
-| POST   | /animais                 | Criar um novo animal        |
-| PUT    | /animais/{id}            | Atualizar animal existente  |
-| DELETE | /animais/{id}            | Excluir animal              |
-| GET    | /animais/filtro?especie= | Filtrar animais por espécie |
-```
+| Método  | Endpoint                         | Descrição                    |
+|---------|----------------------------------|------------------------------|
+| `GET`   | /animais                         | Retorna todos os animais     |
+| `GET`   | /animais/{id}                    | Retorna um animal por ID     |
+| `POST`  | /animais                         | Cria um novo animal          |
+| `PUT`   | /animais/{id}                    | Atualiza um animal existente |
+| `DELETE`| /animais/{id}                    | Remove um animal             |
+| `GET`   | /animais/filtro?especie=Espécie  | Filtra animais por espécie   |
 
 ### 4.1. Documentação Swagger
 

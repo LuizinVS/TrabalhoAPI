@@ -17,8 +17,6 @@ API REST desenvolvida em **Spring Boot** para gerenciar informações de um zool
 - Spring Boot 3.5.5
 - Spring Data JPA
 - MySQL
-- Spring Mail (SMTP)
-- JUnit 5
 - Maven
 
 ## Estrutura do projeto
@@ -51,7 +49,7 @@ src
 
 ### 1. Clone o repositório: 
 ```bash
-git clone https://github.com/seu-usuario/ApiZoologico.git
+git clone https://github.com/LuizinVS/TrabalhoAPI
 ```
 
 ### 2. Configure o banco de dados MySQL em `application.properties`:

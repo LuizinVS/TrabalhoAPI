@@ -1,6 +1,5 @@
 package com.Aula5.ProjetoZoo.ApiZoologico.repositories;
 
-
 import com.Aula5.ProjetoZoo.ApiZoologico.models.Habitat;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

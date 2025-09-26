@@ -5,4 +5,4 @@ public record HabitatDto(
         String nome,
         String tipo,
         Integer capacidadeMaxima
-){}
+) {}

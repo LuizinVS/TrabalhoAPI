@@ -1,61 +1,21 @@
 package com.Aula5.ProjetoZoo.ApiZoologico.services;
 
 import com.Aula5.ProjetoZoo.ApiZoologico.dtos.HabitatDto;
-import com.Aula5.ProjetoZoo.ApiZoologico.models.Habitat;
-import com.Aula5.ProjetoZoo.ApiZoologico.repositories.HabitatRepository;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
-@Service
-public class HabitatService {
+public interface HabitatService {
 
-    private final HabitatRepository repo;
+    HabitatDto create(HabitatDto dto);
+    Optional<HabitatDto> update(Long id, HabitatDto dto);
+    Optional<HabitatDto> findById(Long id);
+    List<HabitatDto> listAll();
+    void delete(Long id);
 
-    public HabitatService(HabitatRepository repo) {
-        this.repo = repo;
-    }
+    List<HabitatDto> findByTipo(String tipo);
+    List<HabitatDto> findByNome(String nome);
 
-    public Habitat create(Habitat habitat) {
-        return repo.save(habitat);
-    }
-
-    public List<Habitat> findAll() {
-        return repo.findAll();
-    }
-
-    public Habitat findById(Long id) {
-        return repo.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "Habitat não encontrado com id " + id
-                ));
-    }
-
-    public Habitat update(Long id, Habitat habitatAtualizado) {
-        Habitat existente = findById(id);
-        existente.setNome(habitatAtualizado.getNome());
-        existente.setTipo(habitatAtualizado.getTipo());
-        existente.setCapacidadeMaxima(habitatAtualizado.getCapacidadeMaxima());
-        return repo.save(existente);
-    }
-
-    public void delete(Long id) {
-        Habitat existente = findById(id);
-        repo.delete(existente);
-    }
-
-    public List<Habitat> findByTipo(String tipo) {
-        return repo.findByTipoIgnoreCase(tipo);
-    }
-
-    public List<Habitat> findByNome(String nome) {
-        return repo.findByNomeContainingIgnoreCase(nome);
-    }
-
-    public HabitatDto toDto(Habitat h) {
-        return new HabitatDto(h.getId(), h.getNome(), h.getTipo(), h.getCapacidadeMaxima());
-    }
+    HabitatDto toDto(com.Aula5.ProjetoZoo.ApiZoologico.models.Habitat habitat);
+    com.Aula5.ProjetoZoo.ApiZoologico.models.Habitat toEntity(HabitatDto dto);
 }

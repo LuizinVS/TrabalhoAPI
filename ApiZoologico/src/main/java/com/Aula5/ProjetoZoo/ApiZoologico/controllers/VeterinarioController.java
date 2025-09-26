@@ -1,81 +1,65 @@
 package com.Aula5.ProjetoZoo.ApiZoologico.controllers;
 
+import com.Aula5.ProjetoZoo.ApiZoologico.dtos.VeterinarioDto;
+import com.Aula5.ProjetoZoo.ApiZoologico.exceptions.ResourceNotFoundException;
 import com.Aula5.ProjetoZoo.ApiZoologico.models.Veterinario;
 import com.Aula5.ProjetoZoo.ApiZoologico.services.VeterinarioService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/veterinario")
+@RequestMapping("/veterinarios")
+@RequiredArgsConstructor
 public class VeterinarioController {
+
     private final VeterinarioService veterinarioService;
 
-    public VeterinarioController(VeterinarioService veterinarioService) {
-        this.veterinarioService = veterinarioService;
-    }
-
     @GetMapping
-    public ResponseEntity<List<Veterinario>> getAll() {
-        return ResponseEntity.ok(veterinarioService.findAll());
+    public ResponseEntity<List<VeterinarioDto>> getAll() {
+        List<VeterinarioDto> vets = veterinarioService.findAll()
+                .stream()
+                .map(veterinarioService::toDto)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(vets);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getById(@PathVariable Long id) {
-        try {
-            return ResponseEntity.ok(veterinarioService.findById(id));
-        } catch (RuntimeException e) {
-            return buildErrorResponse("Veterinário não encontrado", e.getMessage(), HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<VeterinarioDto> getById(@PathVariable Long id) {
+        Veterinario veterinario = veterinarioService.findById(id);
+        VeterinarioDto dto = veterinarioService.toDto(veterinario);
+        return ResponseEntity.ok(dto);
     }
 
     @GetMapping("/especialidade/{especialidade}")
-    public ResponseEntity<?> getByEspecialidade(@PathVariable String especialidade) {
-        try {
-            List<Veterinario> vets = veterinarioService.findByEspecialidade(especialidade);
-            return ResponseEntity.ok(vets);
-        } catch (RuntimeException e) {
-            return buildErrorResponse("Veterinário não encontrado", e.getMessage(), HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<List<VeterinarioDto>> getByEspecialidade(@PathVariable String especialidade) {
+        List<VeterinarioDto> vets = veterinarioService.findByEspecialidade(especialidade)
+                .stream()
+                .map(veterinarioService::toDto)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(vets);
     }
 
     @PostMapping
-    public ResponseEntity<Veterinario> add(@RequestBody Veterinario veterinario) {
-        Veterinario novoVeterinario = veterinarioService.create(veterinario);
-        return ResponseEntity.status(HttpStatus.CREATED).body(novoVeterinario);
+    public ResponseEntity<VeterinarioDto> create(@RequestBody VeterinarioDto dto) {
+        VeterinarioDto criado = veterinarioService.create(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(criado);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Veterinario veterinario) {
-        try {
-            return ResponseEntity.ok(veterinarioService.update(id, veterinario));
-        } catch (RuntimeException e) {
-            return buildErrorResponse("Veterinário não encontrado", e.getMessage(), HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<VeterinarioDto> update(@PathVariable Long id, @RequestBody VeterinarioDto dto) {
+        VeterinarioDto atualizado = veterinarioService.update(id, dto)
+                .orElseThrow(() -> new ResourceNotFoundException("Veterinário não encontrado com ID " + id));
+        return ResponseEntity.ok(atualizado);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
-        try {
-            veterinarioService.delete(id);
-            return ResponseEntity.ok("Veterinário removido com sucesso");
-        } catch (RuntimeException e) {
-            return buildErrorResponse("Veterinário não encontrado", e.getMessage(), HttpStatus.NOT_FOUND);
-        }
-    }
-
-    private ResponseEntity<Map<String, Object>> buildErrorResponse(String error, String message, HttpStatus status) {
-        Map<String, Object> body = new HashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("status", status.value());
-        body.put("error", error);
-        body.put("message", message);
-
-        return ResponseEntity.status(status).body(body);
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        veterinarioService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

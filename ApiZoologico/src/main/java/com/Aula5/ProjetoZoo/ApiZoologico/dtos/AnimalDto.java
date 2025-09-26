@@ -6,5 +6,6 @@ public record AnimalDto(
         String especie,
         int idade,
         Long habitatId,
-        Long cuidadorId
+        Long cuidadorId,
+        String cuidadorNome
 ) {}

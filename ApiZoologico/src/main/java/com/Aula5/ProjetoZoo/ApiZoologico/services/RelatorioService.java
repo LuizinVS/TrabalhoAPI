@@ -22,7 +22,6 @@ public class RelatorioService {
     @Autowired
     private EmailService emailService;
 
-    // exemplo: gera relatório toda segunda às 8h
     @Scheduled(cron = "0 0 8 * * MON")
     public void enviarRelatoriosSemanais() {
         List<Animal> animais = animalRepository.findAll();

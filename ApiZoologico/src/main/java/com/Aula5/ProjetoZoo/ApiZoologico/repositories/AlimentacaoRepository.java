@@ -15,5 +15,4 @@ public interface AlimentacaoRepository extends JpaRepository<Alimentacao, Long> 
     List<Alimentacao> findByAnimalId(Long animalId);
 
     List<Alimentacao> findByHorarioBeforeAndRealizadaFalse(LocalDateTime agora);
-
 }

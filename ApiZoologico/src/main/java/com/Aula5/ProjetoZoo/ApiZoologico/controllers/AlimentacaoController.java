@@ -1,82 +1,63 @@
 package com.Aula5.ProjetoZoo.ApiZoologico.controllers;
 
 import com.Aula5.ProjetoZoo.ApiZoologico.dtos.AlimentacaoDto;
+import com.Aula5.ProjetoZoo.ApiZoologico.exceptions.ResourceNotFoundException;
 import com.Aula5.ProjetoZoo.ApiZoologico.models.Alimentacao;
 import com.Aula5.ProjetoZoo.ApiZoologico.services.AlimentacaoService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
-@RequestMapping("/alimentacao")
+@RequestMapping("/alimentacoes")
+@RequiredArgsConstructor
 public class AlimentacaoController {
 
     private final AlimentacaoService alimentacaoService;
 
-    public AlimentacaoController(AlimentacaoService alimentacaoService) {
-        this.alimentacaoService = alimentacaoService;
-    }
-
     @GetMapping
-    public ResponseEntity<List<AlimentacaoDto>> getAll(
+    public ResponseEntity<List<AlimentacaoDto>> listAll(
             @RequestParam(required = false) String tipoComida,
             @RequestParam(required = false) Long animalId) {
 
+        List<AlimentacaoDto> list;
+
         if (tipoComida != null) {
-            return ResponseEntity.ok(alimentacaoService.findDtoByTipoComida(tipoComida));
+            list = alimentacaoService.findByTipoComida(tipoComida);
         } else if (animalId != null) {
-            return ResponseEntity.ok(alimentacaoService.findDtoByAnimalId(animalId));
+            list = alimentacaoService.findByAnimalId(animalId);
         } else {
-            return ResponseEntity.ok(alimentacaoService.findAllDto());
+            list = alimentacaoService.listAll();
         }
+
+        return ResponseEntity.ok(list);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getById(@PathVariable Long id) {
-        try {
-            return ResponseEntity.ok(alimentacaoService.findDtoById(id));
-        } catch (RuntimeException e) {
-            return buildErrorResponse("Alimentação não encontrada", e.getMessage(), HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<AlimentacaoDto> getById(@PathVariable Long id) {
+        AlimentacaoDto dto = alimentacaoService.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Alimentação não encontrada com ID " + id));
+        return ResponseEntity.ok(dto);
     }
 
     @PostMapping
-    public ResponseEntity<AlimentacaoDto> add(@RequestBody AlimentacaoDto alimentacao) {
-        AlimentacaoDto novaAlimentacao = alimentacaoService.create(alimentacao);
-        return ResponseEntity.status(HttpStatus.CREATED).body(novaAlimentacao);
+    public ResponseEntity<AlimentacaoDto> create(@RequestBody AlimentacaoDto dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(alimentacaoService.create(dto));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody AlimentacaoDto alimentacao) {
-        try {
-            return ResponseEntity.ok(alimentacaoService.update(id, alimentacao));
-        } catch (RuntimeException e) {
-            return buildErrorResponse("Erro ao atualizar Alimentação", e.getMessage(), HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<AlimentacaoDto> update(@PathVariable Long id, @RequestBody AlimentacaoDto dto) {
+                AlimentacaoDto atualizado = alimentacaoService.update(id, dto)
+        .orElseThrow(() -> new ResourceNotFoundException("Alimentação não encontrada com ID" +id));
+                return ResponseEntity.ok(atualizado);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
-        try {
-            alimentacaoService.delete(id);
-            return ResponseEntity.ok("Alimentação removida com sucesso!");
-        } catch (RuntimeException e) {
-            return buildErrorResponse("Erro ao remover Alimentação", e.getMessage(), HttpStatus.NOT_FOUND);
-        }
-    }
-
-    private ResponseEntity<Map<String, Object>> buildErrorResponse(String error, String message, HttpStatus status) {
-        Map<String, Object> body = new HashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("status", status.value());
-        body.put("error", error);
-        body.put("message", message);
-
-        return ResponseEntity.status(status).body(body);
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        alimentacaoService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

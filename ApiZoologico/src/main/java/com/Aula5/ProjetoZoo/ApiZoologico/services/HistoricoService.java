@@ -26,7 +26,6 @@ public class HistoricoService {
                 .map(a -> "Comida: " + a.getTipoComida() + ", Quantidade: " + a.getQuantidadeDiaria())
                 .toList();
 
-        // consultas fictícias (ajustar se já tiver tabela Consulta)
         var consultas = List.of("Exame veterinário - 2025-01-10", "Vacinação - 2025-02-02");
 
         return new HistoricoDto(
